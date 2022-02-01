@@ -22,3 +22,4 @@ jobs:
           cache: 'maven'
       - name: Build and test with Maven #finally build your app with the latest command
         run: mvn clean verify --file ./Backend/api/simple-api/simple-api/pom.xml
+        
