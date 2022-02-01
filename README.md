@@ -412,6 +412,7 @@ version: '3.7'
 services:
   backend: 
     build: ./Backend/api/simple-api/
+    image: alxs39/api
     container_name: api
     networks:
       - app-network
@@ -419,15 +420,17 @@ services:
       - database
   database: 
     build: ./Database/
+    image: alxs39/postgres-data-base
     env_file:
       - ./Database/.env
     container_name: postgres-data-base
     volumes:
-      - /Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance\ 1/TP1/Database/postgres-data:/var/lib/postgresql/data
+      - /Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
   httpd: 
     build: ./Http-server/
+    image: alxs39/http-server
     container_name: http-server
     ports:
       - 80:80
