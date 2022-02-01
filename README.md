@@ -403,6 +403,26 @@ CMD ["httpd-foreground"]
 
 # Link application
 
+```
+.
+├── Backend
+│   ├── api
+│   ├── hello
+│   └── simple-api
+├── Database
+│   ├── 01-CreateScheme.sql
+│   ├── 02-InsertData.sql
+│   ├── Dockerfile
+│   └── postgres-data
+├── Http-server
+│   ├── Dockerfile
+│   ├── httpd.conf
+│   └── index.html
+├── README.md
+├── TP1.pdf
+└── docker-compose.yml
+```
+
 ## Docker-compose
 
 **`docker-compose.yml`**
