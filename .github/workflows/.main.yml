@@ -26,6 +26,8 @@ jobs:
     needs: test-backend # run only when code is compiling and tests are passing 
     runs-on: ubuntu-latest
     steps:
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build image and push backend
@@ -46,5 +48,3 @@ jobs:
           context: ./Http-server/
           tags: ${{secrets.DOCKERHUB_USERNAME}}/http-server:1.0
           push: ${{ github.ref == 'refs/heads/main' }}
-      - name: Login to DockerHub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
