@@ -11,7 +11,9 @@ ENV POSTGRES_DB=db \
 		POSTGRES_PASSWORD=pwd
 ```
 
-`**Image**`
+---
+
+**`Image`**
 
 ```bash
 docker build -t alxs39/postgres-data-base .
@@ -19,42 +21,46 @@ docker build -t alxs39/postgres-data-base .
 
 **`-t`** : nommer une image avec la commande `**docker build**`
 
-`**alxs39/postgres-data-base**`: nom de l’image en fonction du `**USERNAME**` sur Docker Hub
+**`alxs39/postgres-data-base`**: nom de l’image en fonction du **`USERNAME`** sur Docker Hub
 
-`**.**` : l’endroit où est le Dockerfile → dans le répertoire courant
+**`.`** : l’endroit où est le Dockerfile ➡️ dans le répertoire courant
+
+---
 
 ### **Conteneurs**
 
-`**Postgres**`
+**`Postgres`**
 
 ```bash
 docker run -p 5432:5432 -e POSTGRES_DB=db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin --network=app-network --name postgres-data-base -d alxs39/postgres-data-base
 ```
 
-`**-e**` : pour indiquer des variables d’environnements → pour le nom de la base de données, le user et son mot de passe
+**`-e`** : pour indiquer des variables d’environnements ➡️ pour le nom de la base de données, le user et son mot de passe
 
 <aside>
 ℹ️ Why should we run the container with a flag -e to give the environment variables ?
 
 </aside>
 
-→ pour utiliser nos propres variables d’environnements et ne pas utiliser celle par défaut dans le Dockerfile. `**C’est mieux de passer avec -e pour sécuriser**`
+➡️ pour utiliser nos propres variables d’environnements et ne pas utiliser celle par défaut dans le Dockerfile. **`C’est mieux de passer avec -e pour sécuriser`**
 
-→ Alternative : créer un fichier .env et ajouter la clause `**—env-file .env (répertoire du .env)**`
+➡️ Alternative : créer un fichier .env et ajouter la clause **`—env-file .env (répertoire du .env)`**
 
 ```bash
 docker run -p 5432:5432 --env-file .env --network=app-network --name postgres-data-base -d alxs39/postgres-data-base
 ```
 
-`**--network**` : pour lier le conteneur à un réseau → pour moi `**app-network**` partagé avec adminer
+**`--network`** : pour lier le conteneur à un réseau ➡️ pour moi **`app-network`** partagé avec adminer
 
-`**--name**` : pour nommer le conteneur → pour moi `**postgres-data-base**`
+**`--name`** : pour nommer le conteneur ➡️ pour moi **`postgres-data-base`**
 
-`**-d**` : mode détaché → pour avoir la main sur le terminal et lancer le conteneur tout de même
+**`-d`** : mode détaché ➡️ pour avoir la main sur le terminal et lancer le conteneur tout de même
 
-**`-p`** : exposer les ports → pour moi `**5432**` (host) sur `**5432**` (conteneur)
+**`-p`** : exposer les ports ➡️ pour moi **`5432`** (host) sur **`5432`** (conteneur)
 
-`**Adminer**`
+---
+
+**`Adminer`**
 
 ```bash
 docker pull adminer:4.8.1
@@ -73,6 +79,8 @@ Utilisateur	    admin
 Mot de passe	  admin
 Base de données	db
 ```
+
+---
 
 ## Init database
 
@@ -126,6 +134,8 @@ INSERT INTO students (department_id, first_name, last_name) VALUES (2, 'Jack', '
 INSERT INTO students (department_id, first_name, last_name) VALUES (3, 'Aude', 'Javel');
 ```
 
+---
+
 ## Persist data
 
 Ajouter la ligne lors de la commande docker run :
@@ -138,14 +148,16 @@ Ajouter la ligne lors de la commande docker run :
 docker run -p 5432:5432 --env-file .env --network=app-network -v '/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data':/var/lib/postgresql/data --name postgres-data-base -d alxs39/postgres-data-base
 ```
 
-**`-v`** : pour indiquer un répertoire pour stocker les données du conteneurs et les rendre persistantes → pour moi le chemin absolu de mon répertoire est `**/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data**`
+**`-v`** : pour indiquer un répertoire pour stocker les données du conteneurs et les rendre persistantes ➡️ pour moi le chemin absolu de mon répertoire est **`/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data`**
 
 <aside>
 ℹ️ Why do we need a volume to be attached to our postgres container ?
 
 </aside>
 
-→ Pour rendre les données persistantes et ne pas perdre les données lors de l’extinction du conteneur.
+➡️ Pour rendre les données persistantes et ne pas perdre les données lors de l’extinction du conteneur.
+
+---
 
 # **Backend API**
 
@@ -158,7 +170,7 @@ docker run -p 5432:5432 --env-file .env --network=app-network -v '/Users/alexis/
 │   │   └── Main.java
 ```
 
-`**Java**`
+**`Java`**
 
 ```java
 public class Main {
@@ -168,7 +180,7 @@ public class Main {
 }
 ```
 
-`**Dockerfile**`
+**`Dockerfile`**
 
 ```
 FROM openjdk:11
@@ -178,12 +190,14 @@ RUN ["javac", "Main.java"]
 CMD ["java", "Main"]
 ```
 
-`**Commande**`
+**`Commande`**
 
 ```
 docker run --name=java-hello alxs39/java-hello
 $ Hello World!
 ```
+
+---
 
 ## Multistage build
 
@@ -207,9 +221,9 @@ $ Hello World!
 
 </aside>
 
-→ Il faut deux étapes, une première étape de build pour compilé le projet maven et une deuxième étape qui exécute l’application java. De plus nous ne voulons pas des restes du conteneurs de build d’où l’utilité de faire un build et un run.
+➡️ Il faut deux étapes, une première étape de build pour compilé le projet maven (avec les **`jdk`** ➡️ outil de développement java qui sont relativement lourd) et une deuxième étape qui exécute l’application java (avec les **`jre`** qui sont moins lourd et n’exécute que l’application java). De plus nous ne voulons pas des restes du conteneurs de build d’où l’utilité de faire un build et un run.
 
-`**Dockerfile**`
+**`Dockerfile`**
 
 ```
 # Build
@@ -248,12 +262,14 @@ COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
 ENTRYPOINT java -jar myapp.jar
 ```
 
-`**Commandes**`
+**`Commandes`**
 
 ```bash
 docker build -t alxs39/simple-api .
 docker run --name=simple-api -p 8080:8080 -d alxs39/simple-api
 ```
+
+---
 
 ## Backend API
 
@@ -275,7 +291,7 @@ Dans le fichier `**controller/DepartmentController.java**`
 import org.springframework.web.bind.annotation.*;
 ```
 
-`**Dockerfile**`
+**`Dockerfile`**
 
 ```
 # Build
@@ -301,6 +317,8 @@ docker build -t alxs39/api .
 docker run --name=api --network=app-network -p 8080:8080 -d alxs39/api
 ```
 
+---
+
 # Http server
 
 ## Basics
@@ -312,7 +330,7 @@ docker run --name=api --network=app-network -p 8080:8080 -d alxs39/api
 │   ├── index.html
 ```
 
-`**Dockerfile**`
+**`Dockerfile`**
 
 ```
 FROM httpd:2.4.52
@@ -322,12 +340,14 @@ EXPOSE 80
 CMD ["httpd-foreground"]
 ```
 
-`**Commandes**`
+**`Commandes`**
 
 ```bash
 docker build -t alxs39/http-server .
-docker run --name=http-server -p 80:80 -d alxs39/http-server
+docker run --name=http-server --network=app-network -p 80:80 -d alxs39/http-server
 ```
+
+---
 
 ## Configuration
 
@@ -335,4 +355,151 @@ docker run --name=http-server -p 80:80 -d alxs39/http-server
 docker cp http-server:/usr/local/apache2/conf/httpd.conf .
 ```
 
+---
+
 ## Reverse proxy
+
+**`httpd.conf`**
+
+```
+# ligne à décommenter
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+```
+
+```
+# en haut du fichier
+ServerName localhost
+<VirtualHost *:80>
+    ProxyPreserveHost On
+    ProxyPass / http://api:8080/ 
+    ProxyPassReverse / http://api:8080/
+</VirtualHost>
+ServerRoot "/usr/local/apache2"
+```
+
+**`Dockerfile`**
+
+```
+FROM httpd:2.4.52
+WORKDIR /usr/local/apache2/htdocs/
+COPY index.html .
+WORKDIR /usr/local/apache2/conf/
+COPY httpd.conf .
+EXPOSE 80
+CMD ["httpd-foreground"]
+```
+
+<aside>
+ℹ️ Why do we need a reverse proxy ?
+
+</aside>
+
+➡️ Httpd ne génère ni n'héberge lui-même les données, mais le contenu est obtenu par un ou plusieurs serveurs dorsaux, qui n'ont normalement pas de connexion directe avec le réseau externe. Lorsque httpd reçoit une demande d'un client, la demande elle-même est transmise par procuration à l'un de ces serveurs dorsaux, qui traite ensuite la demande, génère le contenu, puis renvoie ce contenu à httpd, qui génère ensuite la réponse HTTP réelle au client. 
+
+➡️ Pour des raisons liées à la sécurité, à la haute disponibilité, à l'équilibrage des charges et à l'authentification/autorisation centralisée. Donc le serveur proxy inverse est la seule source de tout le contenu.
+
+---
+
+# Link application
+
+## Docker-compose
+
+**`docker-compose.yml`**
+
+```yaml
+version: '3.7' 
+services:
+  backend: 
+    build: ./Backend/api/simple-api/
+    container_name: api
+    networks:
+      - app-network
+    depends_on:
+      - database
+  database: 
+    build: ./Database/
+    env_file:
+      - ./Database/.env
+    container_name: postgres-data-base
+    volumes:
+      - /Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance\ 1/TP1/Database/postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+  httpd: 
+    build: ./Http-server/
+    container_name: http-server
+    ports:
+      - 80:80
+    networks:
+      - app-network
+    depends_on:
+      - backend
+networks: 
+  app-network:
+    external: true
+```
+
+**`services`** : déclaration des services, regroupement de conteneur
+
+**`env_file`** : pour indiquer le fichier de variables d’environnements au conteneur postgres
+
+**`build`** : indiquer l’endroit du Dockerfile à utiliser
+
+**`container_name`** : nom du conteneur dans le service
+
+**`networks`** : réseau à utiliser par le conteneur
+
+**`depends_on`*3 : dépendre d’un autre conteneur
+
+**`ports`** : gestion de la redirection de port du conteneur sur le host
+
+**`networks`** : déclaration des réseaux externes pour cet étape
+
+**`volumes`** : indiquer le volume, soit dans les dossiers perso, soit un volume docker, ici c’est un dossier de ma machine
+
+**`image`** : nommer l’image du build de l’image
+
+**`Commandes`**
+
+```bash
+docker-compose -p 'tp1' up -d
+```
+
+**`-p`** : donner un nom au service, ici tp1
+
+**`up`** : lancer le service, donc les conteneurs dans ce service
+
+**`-d`** : mode détaché, pour nous laisser la main dans le terminal exécutant la commande
+
+---
+
+## Publish
+
+**`Commandes`**
+
+```bash
+# tag des trois images (pour donner une version) : la base de données, l'api et le http serveur
+docker tag alxs39/postgres-data-base alxs39/postgres-data-base:1.0
+docker tag alxs39/api alxs39/api:1.0
+docker tag alxs39/http-server alxs39/http-server:1.0
+```
+
+```bash
+# Connexion au docker hub
+docker login -u 'alxs39' -p 'password' docker.io
+```
+
+```bash
+# push des trois images sur le hub
+docker push alxs39/postgres-data-base:1.0
+docker push alxs39/api:1.0
+docker push alxs39/http-server:1.0
+```
+
+<aside>
+ℹ️ Why do we put our images into an online repository ?
+
+</aside>
+
+➡️ Pour que d’autres développeurs puissent utiliser nos images custom. Ou sur un repo privé pour être utilisé par des collaborateurs d’une entreprise.
