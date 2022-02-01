@@ -285,7 +285,7 @@ docker run --name=simple-api -p 8080:8080 -d alxs39/simple-api
 │           └── src
 ```
 
-Dans le fichier `**controller/DepartmentController.java**`
+Dans le fichier **`controller/DepartmentController.java`**
 
 ```java
 import org.springframework.web.bind.annotation.*;
@@ -310,7 +310,7 @@ COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
 ENTRYPOINT java -jar myapp.jar
 ```
 
-`**Commandes**`
+**`Commandes`**
 
 ```bash
 docker build -t alxs39/api .
