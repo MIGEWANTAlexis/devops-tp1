@@ -8,9 +8,9 @@ spring:
     generate-ddl: false
     open-in-view: true
   datasource:
-    url: //TODO
-    username: //TODO
-    password: //TODO
+    url: jdbc:postgresql://postgres-data-base:5432/db
+    username: admin
+    password: admin
     driver-class-name: org.postgresql.Driver
 management:
  server:
