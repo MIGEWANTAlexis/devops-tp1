@@ -19,11 +19,11 @@ ENV POSTGRES_DB=db \
 docker build -t alxs39/postgres-data-base .
 ```
 
-**`-t`** : nommer une image avec la commande `**docker build**`
+**`-t`** : nommer une image avec la commande **`docker build`**
 
 **`alxs39/postgres-data-base`**: nom de l’image en fonction du **`USERNAME`** sur Docker Hub
 
-**`.`** : l’endroit où est le Dockerfile ➡️ dans le répertoire courant
+**`.`** : l’endroit où est le Dockerfile → dans le répertoire courant
 
 ---
 
@@ -35,28 +35,28 @@ docker build -t alxs39/postgres-data-base .
 docker run -p 5432:5432 -e POSTGRES_DB=db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin --network=app-network --name postgres-data-base -d alxs39/postgres-data-base
 ```
 
-**`-e`** : pour indiquer des variables d’environnements ➡️ pour le nom de la base de données, le user et son mot de passe
+**`-e`** : pour indiquer des variables d’environnements → pour le nom de la base de données, le user et son mot de passe
 
 <aside>
 ℹ️ Why should we run the container with a flag -e to give the environment variables ?
 
 </aside>
 
-➡️ pour utiliser nos propres variables d’environnements et ne pas utiliser celle par défaut dans le Dockerfile. **`C’est mieux de passer avec -e pour sécuriser`**
+→ pour utiliser nos propres variables d’environnements et ne pas utiliser celle par défaut dans le Dockerfile. **`C’est mieux de passer avec -e pour sécuriser`**
 
-➡️ Alternative : créer un fichier .env et ajouter la clause **`—env-file .env (répertoire du .env)`**
+→ Alternative : créer un fichier .env et ajouter la clause **`—env-file .env (répertoire du .env)`**
 
 ```bash
 docker run -p 5432:5432 --env-file .env --network=app-network --name postgres-data-base -d alxs39/postgres-data-base
 ```
 
-**`--network`** : pour lier le conteneur à un réseau ➡️ pour moi **`app-network`** partagé avec adminer
+**`--network`** : pour lier le conteneur à un réseau → pour moi **`app-network`** partagé avec adminer
 
-**`--name`** : pour nommer le conteneur ➡️ pour moi **`postgres-data-base`**
+**`--name`** : pour nommer le conteneur → pour moi **`postgres-data-base`**
 
-**`-d`** : mode détaché ➡️ pour avoir la main sur le terminal et lancer le conteneur tout de même
+**`-d`** : mode détaché → pour avoir la main sur le terminal et lancer le conteneur tout de même
 
-**`-p`** : exposer les ports ➡️ pour moi **`5432`** (host) sur **`5432`** (conteneur)
+**`-p`** : exposer les ports → pour moi **`5432`** (host) sur **`5432`** (conteneur)
 
 ---
 
@@ -148,14 +148,14 @@ Ajouter la ligne lors de la commande docker run :
 docker run -p 5432:5432 --env-file .env --network=app-network -v '/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data':/var/lib/postgresql/data --name postgres-data-base -d alxs39/postgres-data-base
 ```
 
-**`-v`** : pour indiquer un répertoire pour stocker les données du conteneurs et les rendre persistantes ➡️ pour moi le chemin absolu de mon répertoire est **`/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data`**
+**`-v`** : pour indiquer un répertoire pour stocker les données du conteneurs et les rendre persistantes → pour moi le chemin absolu de mon répertoire est **`/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data`**
 
 <aside>
 ℹ️ Why do we need a volume to be attached to our postgres container ?
 
 </aside>
 
-➡️ Pour rendre les données persistantes et ne pas perdre les données lors de l’extinction du conteneur.
+→ Pour rendre les données persistantes et ne pas perdre les données lors de l’extinction du conteneur.
 
 ---
 
@@ -221,7 +221,7 @@ $ Hello World!
 
 </aside>
 
-➡️ Il faut deux étapes, une première étape de build pour compilé le projet maven (avec les **`jdk`** ➡️ outil de développement java qui sont relativement lourd) et une deuxième étape qui exécute l’application java (avec les **`jre`** qui sont moins lourd et n’exécute que l’application java). De plus nous ne voulons pas des restes du conteneurs de build d’où l’utilité de faire un build et un run.
+→ Il faut deux étapes, une première étape de build pour compilé le projet maven (avec les **`jdk`** → outil de développement java qui sont relativement lourd) et une deuxième étape qui exécute l’application java (avec les **`jre`** qui sont moins lourd et n’exécute que l’application java). De plus nous ne voulons pas des restes du conteneurs de build d’où l’utilité de faire un build et un run.
 
 **`Dockerfile`**
 
@@ -288,7 +288,18 @@ docker run --name=simple-api -p 8080:8080 -d alxs39/simple-api
 Dans le fichier **`controller/DepartmentController.java`**
 
 ```java
+// corrigé sur le github de la prof
 import org.springframework.web.bind.annotation.*;
+```
+
+Dans le fichier **`ressources/application.yml`**
+
+```yaml
+datasource:
+    url: jdbc:postgresql://postgres-data-base:5432/db
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
 ```
 
 **`Dockerfile`**
@@ -395,15 +406,15 @@ CMD ["httpd-foreground"]
 
 </aside>
 
-➡️ Httpd ne génère pas lui-même les données, mais le contenu est obtenu par un ou plusieurs serveurs dorsaux, qui n'ont normalement pas de connexion directe avec le réseau externe. Lorsque httpd reçoit une demande d'un client, la demande elle-même est transmise par procuration à l'un de ces serveurs dorsaux, qui traite ensuite la demande, génère le contenu, puis renvoie ce contenu à httpd, qui génère ensuite la réponse HTTP réelle au client. 
+→ Httpd ne génère pas lui-même les données, mais le contenu est obtenu par un ou plusieurs serveurs dorsaux, qui n'ont normalement pas de connexion directe avec le réseau externe. Lorsque httpd reçoit une demande d'un client, la demande elle-même est transmise par procuration à l'un de ces serveurs dorsaux, qui traite ensuite la demande, génère le contenu, puis renvoie ce contenu à httpd, qui génère ensuite la réponse HTTP réelle au client. 
 
-➡️ Pour des raisons liées à la sécurité, à la haute disponibilité, à l'équilibrage des charges et à l'authentification/autorisation centralisée. Donc le serveur reverse proxy est la seule source de tout le contenu (point d’entrée unique).
+→ Pour des raisons liées à la sécurité, à la haute disponibilité, à l'équilibrage des charges et à l'authentification/autorisation centralisée. Donc le serveur reverse proxy est la seule source de tout le contenu (point d’entrée unique).
 
 ---
 
 # Link application
 
-```
+```bash
 .
 ├── Backend
 │   ├── api
@@ -469,11 +480,11 @@ networks:
 
 **`build`** : indiquer l’endroit du Dockerfile à utiliser
 
-**`container_name`** : nom du conteneur dans le service
+**`container_name`**: nom du conteneur dans le service
 
 **`networks`** : réseau à utiliser par le conteneur
 
-**`depends_on`*3 : dépendre d’un autre conteneur
+**`depends_on`** : dépendre d’un autre conteneur
 
 **`ports`** : gestion de la redirection de port du conteneur sur le host
 
@@ -525,4 +536,4 @@ docker push alxs39/http-server:1.0
 
 </aside>
 
-➡️ Pour que d’autres développeurs puissent utiliser nos images custom. Ou sur un repo privé pour être utilisé par des collaborateurs d’une entreprise.
+→ Pour que d’autres développeurs puissent utiliser nos images custom. Ou sur un repo privé pour être utilisé par des collaborateurs d’une entreprise.
