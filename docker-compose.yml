@@ -15,7 +15,7 @@ services:
       - ./Database/.env
     container_name: postgres-data-base
     volumes:
-      - /Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance\ 1/TP1/Database/postgres-data:/var/lib/postgresql/data
+      - /Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 1/TP1/Database/postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
   httpd: 
