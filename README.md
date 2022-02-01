@@ -395,9 +395,9 @@ CMD ["httpd-foreground"]
 
 </aside>
 
-➡️ Httpd ne génère ni n'héberge lui-même les données, mais le contenu est obtenu par un ou plusieurs serveurs dorsaux, qui n'ont normalement pas de connexion directe avec le réseau externe. Lorsque httpd reçoit une demande d'un client, la demande elle-même est transmise par procuration à l'un de ces serveurs dorsaux, qui traite ensuite la demande, génère le contenu, puis renvoie ce contenu à httpd, qui génère ensuite la réponse HTTP réelle au client. 
+➡️ Httpd ne génère pas lui-même les données, mais le contenu est obtenu par un ou plusieurs serveurs dorsaux, qui n'ont normalement pas de connexion directe avec le réseau externe. Lorsque httpd reçoit une demande d'un client, la demande elle-même est transmise par procuration à l'un de ces serveurs dorsaux, qui traite ensuite la demande, génère le contenu, puis renvoie ce contenu à httpd, qui génère ensuite la réponse HTTP réelle au client. 
 
-➡️ Pour des raisons liées à la sécurité, à la haute disponibilité, à l'équilibrage des charges et à l'authentification/autorisation centralisée. Donc le serveur proxy inverse est la seule source de tout le contenu.
+➡️ Pour des raisons liées à la sécurité, à la haute disponibilité, à l'équilibrage des charges et à l'authentification/autorisation centralisée. Donc le serveur reverse proxy est la seule source de tout le contenu (point d’entrée unique).
 
 ---
 
