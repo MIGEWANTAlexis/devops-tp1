@@ -21,7 +21,7 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - name: Build and test with Maven #finally build your app with the latest command
-        run: mvn clean verify --file ./Backend/api/simple-api/simple-api/pom.xml
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=MIGEWANTAlexis_devops-tp1 -Dsonar.organization=migewantalexis -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file ./Backend/api/simple-api/simple-api/pom.xml
   build-and-push-docker-image:
     needs: test-backend # run only when code is compiling and tests are passing 
     runs-on: ubuntu-latest
