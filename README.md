@@ -702,7 +702,7 @@ jobs:
 ```
 
 <aside>
-ℹ️ Why did we put **needs: build-and-test-backend** on this job?
+ℹ️ Why did we put needs: build-and-test-backend on this job?
 
 </aside>
 
