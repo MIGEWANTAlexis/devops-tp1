@@ -55,7 +55,7 @@ jobs:
       - name: Build image and push database
         uses: docker/build-push-action@v2
         with:
-          context: ./Database/
+          context: ./Database
           tags: ${{secrets.DOCKERHUB_USERNAME}}/postgres-data-base:1.0
           push: ${{ github.ref == 'refs/heads/master' }}
 
@@ -63,7 +63,7 @@ jobs:
     needs: test-backend # run only when code is compiling and tests are passing 
     runs-on: ubuntu-latest
     env:
-      working-directory: ./Http-server/
+      working-directory: ./Http-server
     steps:
       - name: Login to DockerHub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
