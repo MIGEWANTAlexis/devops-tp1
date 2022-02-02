@@ -1,0 +1,23 @@
+name: Api push
+on: 
+  workflow_run:
+    workflows: [Test backend]
+    types:
+      - completed
+    branches: [master]
+jobs:
+  build-and-push-api:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./Backend/api/simple-api/
+    steps:
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build image and push backend
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Backend/api/simple-api/ # relative path to the place where source code with Dockerfile is located
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/api:1.0 # Note: tags has to be all lower-case
+          push: ${{ github.ref == 'refs/heads/master' }}
