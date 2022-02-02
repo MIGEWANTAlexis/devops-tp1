@@ -23,6 +23,8 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - name: Build and test with Maven #finally build your app with the latest command
+        env:
+          GITHUB_TOKEN: ${{secrets.TOKEN_GITHUB}}
         run: mvn -B verify sonar:sonar -Dsonar.projectKey=MIGEWANTAlexis_devops-tp1 -Dsonar.organization=migewantalexis -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file ./Backend/api/simple-api/simple-api/pom.xml
   build-and-push-api:
     needs: test-backend # run only when code is compiling and tests are passing 
