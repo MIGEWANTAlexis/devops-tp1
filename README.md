@@ -72,7 +72,7 @@ docker run --name=adminer --network=app-network -p 8080:8080 -d adminer:4.8.1
 
 Pour se connecter depuis l’interface http.//localhost:8080 :
 
-```bash
+```
 Système	        PostgreSQL
 Serveur	        postgres-data-base
 Utilisateur	    admin
@@ -86,7 +86,7 @@ Base de données	db
 
 Ajouter la ligne dans le Dockerfile et créer les scripts dans le dossier le travail
 
-```bash
+```
 COPY ["./01-CreateScheme.sql", "./02-InsertData.sql", "/docker-entrypoint-initdb.d/"]
 ```
 
@@ -99,7 +99,7 @@ ENV POSTGRES_DB=db \
     POSTGRES_PASSWORD=pwd
 ```
 
-```sql
+```
 .
 └── Database
     ├── 01-CreateScheme.sql
@@ -164,6 +164,7 @@ docker run -p 5432:5432 --env-file .env --network=app-network -v '/Users/alexis/
 ## Basics
 
 ```
+.
 ├── Backend
 │   ├── hello
 │   │   ├── Dockerfile
@@ -202,6 +203,7 @@ $ Hello World!
 ## Multistage build
 
 ```
+.
 ├── Backend
 │   ├── hello
 │   │   ├── Dockerfile
@@ -414,7 +416,7 @@ CMD ["httpd-foreground"]
 
 # Link application
 
-```bash
+```
 .
 ├── Backend
 │   ├── api
@@ -480,7 +482,7 @@ networks:
 
 **`build`** : indiquer l’endroit du Dockerfile à utiliser
 
-**`container_name`**: nom du conteneur dans le service
+**`container_name`** : nom du conteneur dans le service
 
 **`networks`** : réseau à utiliser par le conteneur
 
@@ -566,7 +568,7 @@ docker push alxs39/http-server:1.0
 
 ```
 
-```bash
+```
 create .main.yml at root project
 ```
 
@@ -871,11 +873,11 @@ jobs:
 ```
 
 ```
-.github
-│   └── workflows
-│       ├── .api-push.yml
-│       ├── .database-http-server.yml
-│       └── .test-backend.yml
+github
+└── workflows
+	 ├── .api-push.yml
+   ├── .database-http-server.yml
+   └── .test-backend.yml
 ```
 
 **`.api-push.yml`**
