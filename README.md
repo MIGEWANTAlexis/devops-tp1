@@ -330,7 +330,7 @@ jobs:
           push: ${{ github.ref == 'refs/heads/master' }}
 ```
 
-```yaml
+```
 .github
 │   └── workflows
 │       ├── .api-push.yml
