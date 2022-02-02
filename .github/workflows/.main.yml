@@ -11,9 +11,7 @@ on:
       - develop
 jobs: 
   test-backend:
-    runs-on: ubuntu-18.04
-    env:
-      working-directory: ./Backend/api/simple-api
+    runs-on: ubuntu-18.04 
     steps:
       - uses: actions/checkout@v2.3.3 #checkout your github code using actions/checkout@v2.3.3
       - name: Set up JDK 11
@@ -23,18 +21,11 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - name: Build and test with Maven #finally build your app with the latest command
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: mvn -B verify sonar:sonar -Dsonar.projectKey=MIGEWANTAlexis_devops-tp1 -Dsonar.organization=migewantalexis -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file ./Backend/api/simple-api/simple-api/pom.xml
-  
-  build-and-push-api:
+        run: mvn clean verify --file ./Backend/api/simple-api/simple-api/pom.xml
+  build-and-push-docker-image:
     needs: test-backend # run only when code is compiling and tests are passing 
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./Backend/api/simple-api
     steps:
-      - name: Login to DockerHub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build image and push backend
@@ -42,34 +33,18 @@ jobs:
         with:
           context: ./Backend/api/simple-api/ # relative path to the place where source code with Dockerfile is located
           tags: ${{secrets.DOCKERHUB_USERNAME}}/api:1.0 # Note: tags has to be all lower-case
-          push: ${{ github.ref == 'refs/heads/master' }}
-
-  build-and-push-database:
-    needs: test-backend # run only when code is compiling and tests are passing 
-    runs-on: ubuntu-latest
-    env:
-      working-directory: ./Database
-    steps:
-      - name: Login to DockerHub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
+          push: ${{ github.ref == 'refs/heads/main' }}
       - name: Build image and push database
         uses: docker/build-push-action@v2
         with:
-          context: ./Database
+          context: ./Database/
           tags: ${{secrets.DOCKERHUB_USERNAME}}/postgres-data-base:1.0
-          push: ${{ github.ref == 'refs/heads/master' }}
-
-  build-and-push-http-server:
-    needs: test-backend # run only when code is compiling and tests are passing 
-    runs-on: ubuntu-latest
-    env:
-      working-directory: ./Http-server
-    steps:
-      - name: Login to DockerHub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
+          push: ${{ github.ref == 'refs/heads/main' }}
       - name: Build image and push httpd
         uses: docker/build-push-action@v2
         with:
-          context: ./Http-server
+          context: ./Http-server/
           tags: ${{secrets.DOCKERHUB_USERNAME}}/http-server:1.0
-          push: ${{ github.ref == 'refs/heads/master' }}
+          push: ${{ github.ref == 'refs/heads/main' }}
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_PWD}}
