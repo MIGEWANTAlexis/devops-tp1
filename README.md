@@ -572,6 +572,8 @@ docker push alxs39/http-server:1.0
 create .main.yml at root project
 ```
 
+---
+
 ## Build and test your application
 
 ```bash
@@ -652,6 +654,8 @@ jobs:
 **`cache`** : pour mettre en cache les dépendances maven
 
 **`run`** : exécuter des commande avec le shell du système d’exploitation
+
+---
 
 ## First steps into the CD world
 
@@ -772,6 +776,8 @@ jobs:
 
 → pour rendre disponible les images à jour pour les autres développeurs et la production.
 
+---
+
 # **Setup Quality Gate**
 
 ## Quality gate configuration
@@ -789,6 +795,8 @@ Attention à désactiver dans **`Administration → Analysis Method → SonarClo
 **Security Hotspots Reviewed** is less than **`100%`**
 
 **Security Rating** is worse than **`A`**
+
+---
 
 # **Going further: Split pipeline (Optional)**
 
@@ -974,12 +982,305 @@ jobs:
       - uses: actions/checkout@v2.3.3 #checkout your github code using actions/checkout@v2.3.3
       - name: Set up JDK 11
         uses: actions/setup-java@v2 #do the same with another action (actions/setup-java@v2) that enable to setup jdk 11
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          cache: 'maven'
-      - name: Build and test with Maven #finally build your app with the latest command
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: mvn -B verify sonar:sonar -Dsonar.projectKey=MIGEWANTAlexis_devops-tp1 -Dsonar.organization=migewantalexis -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file ./Backend/api/simple-api/simple-api/pom.xml
 ```
+
+# TP3 - Ansible
+
+# **Intro**
+
+## Inventories
+
+**`setup.yml`**
+
+```yaml
+all: 
+  vars:
+    ansible_user: centos
+    ansible_ssh_private_key_file: "/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 3/id_rsa"
+  children:
+    prod:
+      hosts: alexis.migewant.takima.cloud
+```
+
+---
+
+## Facts
+
+**`setup.yml`**
+
+```yaml
+all: 
+  vars:
+    ansible_user: centos
+    ansible_ssh_private_key_file: "/Users/alexis/Documents/IRC/4IRC/S8/Devops/Séance 3/id_rsa"
+  children:
+    prod:
+      hosts: alexis.migewant.takima.cloud
+```
+
+**`all`** : groupe qui contient tous les hôtes
+
+**`vars`** : déclaration des variables
+
+**`ansible_user`** : l’utilisateur sur la machine ansible
+
+**`ansible_ssh_private_key_file`** : la clé privée SSH associé (son chemin)
+
+**`children`** : groupes de groupes
+
+**`prod`** : la production
+
+**`hosts`** : adresse du serveur de production
+
+---
+
+# **Playbooks**
+
+## First playbook
+
+**`playbook.yml`**
+
+```yaml
+- hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: Test connection
+      ping:
+```
+
+---
+
+## Advanced playbook
+
+**`playbook.yml`**
+
+```yaml
+- hosts: all
+  gather_facts: false
+  become: yes
+  # Install Docker
+  tasks:
+    - name: Clean packages
+      command:
+        cmd: dnf clean -y packages
+    - name: Install device-mapper-persistent-data
+      dnf:
+        name: device-mapper-persistent-data
+        state: latest
+    - name: Install lvm2
+      dnf:
+        name: lvm2
+        state: latest
+    - name: add repo docker
+      command:
+        cmd: sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    - name: Install Docker
+      dnf:
+        name: docker-ce
+        state: present
+    - name: install python3
+      dnf:
+        name: python3
+    - name: Pip install
+      pip:
+        name: docker
+    - name: Make sure Docker is running
+      service: name=docker state=started
+      tags: docker
+```
+
+---
+
+## Using role
+
+```
+.
+├── ansible
+│   ├── inventories
+│   │   └── setup.yml
+│   ├── playbook.yml
+│   └── roles
+│       └── create-docker
+│           ├── .travis.yml
+│           ├── README.md
+│           ├── defaults
+│           ├── files
+│           ├── handlers
+│           ├── meta
+│           ├── tasks
+│           │   └── main.yml
+│           ├── templates
+│           ├── tests
+│           └── vars
+```
+
+**`playbook.yml`**
+
+```yaml
+- hosts: all
+  gather_facts: false
+  become: yes
+```
+
+**`hosts`** : qui sont utilisés pour classer les hôtes et décider quels hôtes nous contrôlons à quel moment et dans quel but
+
+**`gather_facts`** : rassembler les données sur les hôtes distant
+
+**`become`** : activer l'escalade des privilèges
+
+---
+
+**`main.yml` → create docker**
+
+```yaml
+---
+# tasks file for roles/create-docker
+- name: Clean packages
+  command:
+    cmd: dnf clean -y packages
+- name: Install device-mapper-persistent-data
+  dnf:
+    name: device-mapper-persistent-data
+    state: latest
+- name: Install lvm2
+  dnf:
+    name: lvm2
+    state: latest
+- name: add repo docker
+  command:
+    cmd: sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+- name: Install Docker
+  dnf:
+    name: docker-ce
+    state: present
+- name: install python3
+  dnf:
+    name: python3
+- name: Pip install
+  pip:
+    name: docker
+- name: Make sure Docker is running
+  service: name=docker state=started
+  tags: docker
+```
+
+**`name`** : nom de la tâches
+
+**`command`** : listes de commandes à exécuter avec le shell
+
+**`cmd`** : une commande à exécuter
+
+**`dnf`** : installe, met à niveau, supprime et liste les paquets et les groupes avec le gestionnaire de paquets dnf
+
+**`state`** : l’état à satisfaire
+
+**`service`** : contrôle les services sur les hôtes distants.
+
+**`tags`** : pouvoir exécuter seulement une partie spécifique de celui-ci plutôt que d'exécuter tout le playbook
+
+---
+
+# **Deploy your app**
+
+**`playbook.yml`**
+
+```yaml
+- hosts: all
+  gather_facts: false
+  become: yes
+
+  roles:
+    - create-docker
+    - create-network
+    - launch-database
+    - launch-app
+    - launch-proxy
+```
+
+Attention dans roles à respecter l’ordre de déploiement
+
+---
+
+**`api/main.yml`**
+
+```yaml
+---
+# tasks file for roles/launch-app
+- name: Launch app
+  docker_container:
+    name: api
+    image: alxs39/api:1.0
+    networks:
+      - name: app-network
+    env:
+      SPRING_DATASOURCE_USERNAME: admin_test
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/db
+```
+
+**`env`** : spécifier les variables d’environnements pour la base de données
+
+---
+
+**`proxy/main.yml`**
+
+```yaml
+---
+# tasks file for roles/launch-proxy
+- name: Launch proxy
+  docker_container:
+    name: httpd
+    image: alxs39/http-server:1.0
+    networks:
+      - name: app-network
+    ports:
+      - 80:80
+```
+
+**`ports`** : pour rediriger les ports
+
+---
+
+**`database/main.yml`**
+
+```yaml
+---
+# tasks file for roles/launch-database
+- name: Launch database
+  docker_container:
+    name: database
+    image: alxs39/postgres-data-base:1.0
+    networks:
+      - name: app-network 
+    env:
+      POSTGRES_USER: admin_test
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: db
+```
+
+**`network/main.yml`**
+
+```yaml
+---
+# tasks file for roles/create-network
+- name: Create network
+  docker_network:
+    name: app-network
+```
+
+**`docker_network`** : liste des réseaux
+
+**`name`** : nom du réseau
+
+---
+
+**`name`** : nom de la tâche
+
+**`docker_container`** : information sur le conteneur docker
+
+**`name`** : nom du conteneur docker
+
+**`image`** : image pour le conteneur docker
+
+**`networks`** : comme dans le docker-compose on partage un réseau

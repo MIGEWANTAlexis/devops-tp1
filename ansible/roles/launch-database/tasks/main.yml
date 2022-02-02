@@ -1,0 +1,12 @@
+---
+# tasks file for roles/launch-database
+- name: Launch database
+  docker_container:
+    name: database
+    image: alxs39/postgres-data-base:1.0
+    networks:
+      - name: app-network 
+    env:
+      POSTGRES_USER: admin_test
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: db

@@ -1,0 +1,10 @@
+---
+# tasks file for roles/launch-proxy
+- name: Launch proxy
+  docker_container:
+    name: httpd
+    image: alxs39/http-server:1.0
+    networks:
+      - name: app-network
+    ports:
+      - 80:80

@@ -1,0 +1,12 @@
+---
+# tasks file for roles/launch-app
+- name: Launch app
+  docker_container:
+    name: api
+    image: alxs39/api:1.0
+    networks:
+      - name: app-network
+    env:
+      SPRING_DATASOURCE_USERNAME: admin_test
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/db
