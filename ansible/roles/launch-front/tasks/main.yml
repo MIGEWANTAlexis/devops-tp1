@@ -1,0 +1,8 @@
+---
+# tasks file for roles/launch-front
+- name: Launch front
+  docker_container:
+    name: front
+    image: alxs39/front:1.0
+    networks:
+      - name: app-network
