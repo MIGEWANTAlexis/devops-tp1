@@ -2,6 +2,7 @@
   <div id="app">
     <router-link to="/">
       <img alt="Vue logo" src="./assets/logo.png" />
+      <p>👋</p>
     </router-link>
     <router-view />
   </div>
