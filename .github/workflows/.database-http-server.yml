@@ -36,5 +36,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./Http-server/
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/http-server:1.0
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/http-server:1.1
           push: ${{ github.ref == 'refs/heads/master' }}
