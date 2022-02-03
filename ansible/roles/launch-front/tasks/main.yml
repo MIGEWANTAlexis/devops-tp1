@@ -3,6 +3,6 @@
 - name: Launch front
   docker_container:
     name: front
-    image: alxs39/front:1.2
+    image: alxs39/front:1.0
     networks:
       - name: app-network
