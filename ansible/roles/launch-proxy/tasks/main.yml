@@ -3,7 +3,7 @@
 - name: Launch proxy
   docker_container:
     name: httpd
-    image: alxs39/http-server:1.0
+    image: alxs39/http-server:1.1
     networks:
       - name: app-network
     ports:
