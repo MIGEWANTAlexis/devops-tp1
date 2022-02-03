@@ -1,0 +1,27 @@
+name: Deploy on ansible
+on:
+  workflow_run:
+    workflows: ["Api push"]
+    types:
+      - completed
+    branches: ['master']
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ./ansible/playbook.yml
+          key: ${{secrets.ID_RSA_ANSIBLE}}
+          inventory: |
+            all:
+              vars:
+                ansible_user: centos
+              children:
+                prod:
+                  hosts: alexis.migewant.takima.cloud
