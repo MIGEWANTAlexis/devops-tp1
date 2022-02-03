@@ -28,6 +28,14 @@ services:
       - app-network
     depends_on:
       - backend
+  front: 
+    build: ./devops-front-main/
+    image: alxs39/front
+    container_name: front
+    networks:
+      - app-network
+    depends_on:
+      - backend
 networks: 
   app-network:
     external: true
