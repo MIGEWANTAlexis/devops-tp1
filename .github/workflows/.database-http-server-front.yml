@@ -52,5 +52,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./devops-front-main/
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/front:1.1
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/front:1.2
           push: ${{ github.ref == 'refs/heads/master' }}
