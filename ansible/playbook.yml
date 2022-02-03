@@ -4,6 +4,7 @@
 
   roles:
     - create-docker
+    - remove-containers-ansible
     - create-network
     - launch-database
     - launch-app
