@@ -1284,3 +1284,119 @@ Attention dans roles à respecter l’ordre de déploiement
 **`image`** : image pour le conteneur docker
 
 **`networks`** : comme dans le docker-compose on partage un réseau
+
+# Front
+
+## En local
+
+Dans le dossier **`devops-front-end`**
+
+```bash
+docker build -t alxs39/front .
+```
+
+```bash
+docker tag alxs39/front alxs39/front:1.0
+```
+
+```bash
+docker login -u 'alxs39' -p 'password' docker.io
+```
+
+```bash
+docker push alxs39/front:1.0
+```
+
+**`docker-compose`**
+
+```yaml
+front: 
+	build: ./devops-front-main/
+	image: alxs39/front
+	container_name: front
+	networks:
+	  - app-network
+	depends_on:
+	  - backend
+```
+
+Dans le fichier **`Http-server/httpd.conf`**
+
+```
+ServerName localhost
+<VirtualHost *:80>
+    ProxyPreserveHost On
+    ProxyPass /api http://api:8080/ 
+    ProxyPassReverse /api http://api:8080/
+    ProxyPass / http://front:80/ 
+    ProxyPassReverse / http://front:80/
+</VirtualHost>
+ServerRoot "/usr/local/apache2"
+```
+
+Dans le fichier **`devops-front-main/.env.production`**
+
+```
+VUE_APP_API_URL=localhost/api
+```
+
+Dans le dossier racine **`.`**
+
+```bash
+docker-compose -p 'tp1' up -d
+```
+
+→ il faut supprimer le port (car on ne l’indique pas dans la configuration httpd)
+
+---
+
+## Sur le serveur
+
+Dans le fichier **`devops-front-main/.env.production`**
+
+```
+VUE_APP_API_URL=alexis.migewant.takima.cloud/api
+```
+
+Dans le dossier **`ansible`**
+
+```bash
+ansible-galaxy init roles/launch-front
+```
+
+Dans le fichier **`playbook.yml`**
+
+```yaml
+- hosts: all
+  gather_facts: false
+  become: yes
+
+  roles:
+    - create-docker
+    - create-network
+    - launch-database
+    - launch-app
+    - launch-proxy
+    - launch-front
+```
+
+Dans le fichier **`roles/launch-front/tasks/main.yml`**
+
+```yaml
+---
+# tasks file for roles/launch-front
+- name: Launch front
+  docker_container:
+    name: front
+    image: alxs39/front:1.0
+    networks:
+      - name: app-network
+```
+
+```bash
+ansible-playbook -i inventories/setup.yml playbook.yml
+```
+
+---
+
+# **Continuous deployment**
